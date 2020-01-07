@@ -23,6 +23,30 @@ export class AppComponent implements OnInit {
         this._renderer.removeClass(document.body, 'dark-theme');
       }
     });
+
+    const handleMatchEvent = (
+      matchEvent: MediaQueryList | MediaQueryListEvent
+    ) => {
+      this.toggleTheme.patchValue(!!matchEvent.matches);
+    };
+
+    const matchMediaPreferDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    );
+
+    handleMatchEvent(matchMediaPreferDark);
+
+    // Checking to see if addEventListener is available in the browser (it's not in Safari)
+    if (
+      matchMediaPreferDark.addEventListener &&
+      matchMediaPreferDark.addEventListener instanceof Function
+    ) {
+      matchMediaPreferDark.addEventListener('change', event => {
+        handleMatchEvent(event);
+      });
+    } else {
+      matchMediaPreferDark.addListener(handleMatchEvent);
+    }
   }
 
   clear() {
