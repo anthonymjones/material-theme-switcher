@@ -1,5 +1,7 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { UserPrefsService } from './user-prefs.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,16 +13,18 @@ export class AppComponent implements OnInit {
   submitted = false;
   toggleTheme = new FormControl(false);
 
-  constructor(private _renderer: Renderer2) {}
+  constructor(private userPrefsService: UserPrefsService) {}
 
   ngOnInit() {
+    this.userPrefsService.preferredTheme$
+      .pipe(take(1))
+      .subscribe(theme => this.toggleTheme.patchValue(theme === 'dark'));
+
     this.toggleTheme.valueChanges.subscribe(toggleValue => {
       if (toggleValue === true) {
-        this._renderer.addClass(document.body, 'dark-theme');
-        this._renderer.removeClass(document.body, 'light-theme');
+        this.userPrefsService.setStoredTheme('dark');
       } else {
-        this._renderer.addClass(document.body, 'light-theme');
-        this._renderer.removeClass(document.body, 'dark-theme');
+        this.userPrefsService.setStoredTheme('light');
       }
     });
   }
