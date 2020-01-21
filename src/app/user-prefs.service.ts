@@ -16,14 +16,14 @@ export class UserPrefsService {
   }
 
   setStoredTheme(preference: 'light' | 'dark'): void {
-    localStorage.setItem('theme', preference);
+    localStorage.setItem('theme-preference', preference);
     this.preferredTheme.next(preference);
     this.changeTheme(preference);
   }
 
   private getStoredTheme(): string {
     const storedTheme =
-      (localStorage.getItem('theme') as 'light' | 'dark') || 'light';
+      (localStorage.getItem('theme-preference') as 'light' | 'dark') || 'light';
     this.changeTheme(storedTheme);
     return storedTheme;
   }
