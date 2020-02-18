@@ -15,14 +15,16 @@ export class AppComponent implements OnInit {
   constructor(private userPrefsService: UserPrefsService) {}
 
   ngOnInit(): void {
-    this.toggleTheme.patchValue(
-      this.userPrefsService.preferredTheme === ThemeOption.DARK
-    );
+    this.userPrefsService
+      .getPreferredTheme()
+      .subscribe(theme =>
+        this.toggleTheme.patchValue(theme === ThemeOption.DARK)
+      );
 
     this.toggleTheme.valueChanges.subscribe((toggleValue: boolean) => {
-      this.userPrefsService.preferredTheme = toggleValue
-        ? ThemeOption.DARK
-        : ThemeOption.LIGHT;
+      this.userPrefsService.setPreferredTheme(
+        toggleValue ? ThemeOption.DARK : ThemeOption.LIGHT
+      );
     });
   }
 
