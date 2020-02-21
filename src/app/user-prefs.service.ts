@@ -1,6 +1,6 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -36,7 +36,7 @@ export class UserPrefsService {
       .pipe(map(user => user.themePreference || DEFAULT));
   }
 
-  setPreferredTheme(value): void {
+  setPreferredTheme(value: ThemeOption): void {
     const demoUser = {
       id: 1,
       themePreference: value
@@ -46,12 +46,9 @@ export class UserPrefsService {
       .put<User>(`http://localhost:3000/users/${demoUser.id}`, demoUser, {
         headers
       })
-      .pipe(
-        tap(() =>
-          value === ThemeOption.DARK ? this.turnDarkOn() : this.turnLightOn()
-        )
-      )
-      .subscribe();
+      .subscribe(() =>
+        value === ThemeOption.DARK ? this.turnDarkOn() : this.turnLightOn()
+      );
   }
 
   turnDarkOn() {
